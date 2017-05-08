@@ -22,15 +22,13 @@ FusionEKF::FusionEKF() {
   H_laser_ = MatrixXd(2, 4);
   Hj_ = MatrixXd(3, 4);
 
-  //measurement covariance matrix - laser
-  R_laser_ << 0.000225, 0,
-              0, 0.000225;
-  
-  //measurement covariance matrix - radar
-  R_radar_ << 0.0015, 0, 0,
-              0, 0.00008, 0,
-              0, 0, 0.001;
+  R_laser_ << 0.0225, 0,
+              0,      0.0225;
 
+  R_radar_ << 0.09, 0,      0,
+              0,    0.0009, 0,
+              0,    0,      0.09;
+  
   //create a 4D state vector, we don't know yet the values of the x state
   ekf_.x_ = VectorXd(4);
 
@@ -130,8 +128,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     float dt_2 = dt * dt;
     float dt_3 = dt_2 * dt;
     float dt_4 = dt_3 * dt;
-    float noise_ax = 1;
-    float noise_ay = 1;
+    float noise_ax = 9;
+    float noise_ay = 9;
 
     //Modify the F matrix so that the time is integrated
     ekf_.F_(0, 2) = dt;
@@ -169,6 +167,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   }
 
   // print the output
-  cout << "x_ = " << ekf_.x_ << endl;
-  cout << "P_ = " << ekf_.P_ << endl;
+  //cout << "x_ = " << ekf_.x_ << endl;
+  //cout << "P_ = " << ekf_.P_ << endl;
 }

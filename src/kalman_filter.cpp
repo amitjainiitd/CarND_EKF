@@ -1,5 +1,6 @@
 #include "kalman_filter.h"
-
+#include <iostream>
+using namespace std;
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
@@ -65,14 +66,22 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
     
     //VectorXd z_pred = H_ * x_;
     VectorXd y = z - z_pred;
+    while (y(1) > M_PI) {
+        y(1) -= M_PI;
+    }
+
+    while (y(1) < -M_PI) {
+        y(1) += M_PI;
+    }
+    cout << y(1) << M_PI<< endl;
     UpdateHelperFunction(y);
 }
 
 void KalmanFilter::UpdateHelperFunction(const VectorXd &y) {
     MatrixXd Ht = H_.transpose();
-    MatrixXd S = H_ * P_ * Ht + R_;
-    MatrixXd Si = S.inverse();
     MatrixXd PHt = P_ * Ht;
+    MatrixXd S = H_ * PHt + R_;
+    MatrixXd Si = S.inverse();
     MatrixXd K = PHt * Si;
 
     //new estimate
